@@ -4,7 +4,7 @@
 using namespace std;
 
 class stack{
-    int arr[SIZE];
+    char arr[SIZE];
     int top = 0;
 public:
     bool isEmpty(){
@@ -15,8 +15,9 @@ public:
     }
     char peek(){
         if(!isEmpty()) return arr[top-1];
+        return '\0';
     }
-    void push(int data){
+    void push(char data){
         if(!isFull()){
             arr[top] = data;
             top++;
@@ -32,22 +33,21 @@ public:
 
 int main(){
     stack s;
-    char x;
+    string str;
+    getline(cin, str);
     bool match = true;
     int n = 0;
-    while(cin.get(x) && x != '\n' && match == true) {
-        switch (x)
-        {
-        case '\n':
-            return 0;
+    for(int i = 0; i < str.size(); i++){
+        char x = str[i];
+        switch (x){
         case '(':
         case '[':
         case '{':
             s.push(x);
             break;
         case '<':
-            if(!s.isEmpty() && s.peek() == '<'){
-                s.pop();
+            if(i + 1 < str.size() && str[i+1] == '<'){
+                i++;
             }
             else {
                 s.push('<');
@@ -75,14 +75,19 @@ int main(){
             else match = false;
             break;
         case '>':
-            if(!s.isEmpty() && s.peek() == '<'){
-                s.pop();
-                n++;
+            if(i + 1 < str.size() && str[i+1] == '>'){
+                i++;
             }
-            else match = false;
+            else{
+                if(!s.isEmpty() && s.peek() == '<'){
+                    s.pop();
+                    n++;
+                }
+                else match = false;  
+            }      
             break;
-        
         }
+        if (!match) break;
     }
     if (!s.isEmpty()) match = false;
     if(match == true){
